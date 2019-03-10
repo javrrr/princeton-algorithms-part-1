@@ -19,10 +19,10 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid[row-1][col-1] = true;
-        union(row, col);
+        unionNeighbors(row, col);
     }
 
-    private void union(int row, int col) {
+    private void unionNeighbors(int row, int col) {
         int index = getIndex(row, col);
         int[] neighbors = { 1, -1 };
         for(int n : neighbors) {

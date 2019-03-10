@@ -28,14 +28,13 @@ public class PercolationStats {
     private double performMonteCarlo() {
         Percolation percolation = new Percolation(size);
         int count = 0;
-        int row, col;
         while (!percolation.percolates()) {
-            do {
-                row = StdRandom.uniform(1, size + 1);
-                col = StdRandom.uniform(1, size + 1);
-            } while (percolation.isOpen(row, col));
-            count++;
-            percolation.open(row, col);
+            int row = StdRandom.uniform(1, size + 1);
+            int col = StdRandom.uniform(1, size + 1);
+            if(!percolation.isOpen(row, col)) {
+                percolation.open(row, col);
+                count++;
+            }
         }
         return count / Math.pow(size, 2);
     }
@@ -52,12 +51,12 @@ public class PercolationStats {
 
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean - (Z_SCORE * stddev/Math.sqrt(trials));
+        return mean - (Z_SCORE * stddev / Math.sqrt(trials));
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean + (Z_SCORE * stddev/Math.sqrt(trials));
+        return mean + (Z_SCORE * stddev / Math.sqrt(trials));
     }
 
     // test client (described below)
