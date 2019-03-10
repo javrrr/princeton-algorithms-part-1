@@ -1,14 +1,13 @@
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private final WeightedQuickUnionUF unionFind;
-    private final int size;
     private boolean[][] grid;
+    private final int size;
 
     // create n-by-n unionFind, with all sites blocked
     public Percolation(int n) {
-        if(n <= 0) throw new IllegalArgumentException();
+        if (n <= 0) throw new IllegalArgumentException();
         grid = new boolean[n][n];
         unionFind = new WeightedQuickUnionUF(n * n);
         size = n;
@@ -20,43 +19,28 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid[row-1][col-1] = true;
+        union(row, col);
+    }
+
+    private void union(int row, int col) {
         int index = getIndex(row, col);
-
-        if (row - 1 > 0) {
-            if (isOpen(row - 1, col)) {
-                unionFind.union(index, getIndex(row - 1, col));
+        int[] neighbors = { 1, -1 };
+        for(int n : neighbors) {
+            if (!isInvalid(row, col + n)) {
+                if (isOpen(row, col + n)) {
+                    unionFind.union(index, getIndex(row, col + n));
+                }
+            }
+            if (!isInvalid(row + n, col)) {
+                if (isOpen(row + n, col)) {
+                    unionFind.union(index, getIndex(row + n, col));
+                }
             }
         }
-        if (row + 1 <= size ) {
-            if (isOpen(row + 1, col)) {
-                unionFind.union(index, getIndex( row + 1, col));
-            }
-        }
-        if (col - 1 > 0) {
-            if (isOpen(row, col - 1)) {
-                unionFind.union(index, getIndex(row, col - 1));
-            }
-        }
-        if (col + 1 <= size) {
-            if (isOpen(row, col + 1)) {
-                unionFind.union(index, getIndex(row, col + 1));
-            }
-        }
-
-        //int[] neighbors = { row - 1, col + 1, row + 1, col -1 };
-
     }
 
     private int getIndex(int row, int col) {
-        int index;
-        if (row == 1) {
-            index = col - 1;
-        } else {
-            int base = (row - 1) * size;
-            index = base + col - 1;
-        }
-        return index;
-        //return row == 1 ? col - 1 : (row - 1) * size + col - 1;
+        return row == 1 ? col - 1 : (row - 1) * size + col - 1;
     }
 
     // is site (row, col) open?
@@ -72,16 +56,15 @@ public class Percolation {
         if (isInvalid(row, col)) {
             throw new IllegalArgumentException();
         }
-        if (isOpen(row, col) && connectsToTop(row, col)) return true;
-        return false;
-    }
-
-    private boolean connectsToTop(int row, int col) {
-        int currentIndex = unionFind.find(getIndex(row, col));
-
+        int index = getIndex(row, col);
+        if (!isOpen(row, col)) return false;
         for (int i = 1; i <= size; i++) {
-            int topIndex = unionFind.find(getIndex(1, i));
-            if (isOpen(row, i) && unionFind.connected(currentIndex, topIndex)) return true;
+            if (isOpen(1, i)) {
+                int topIndex = getIndex(1, i);
+                if(unionFind.connected(index, topIndex)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -110,8 +93,4 @@ public class Percolation {
     private boolean isInvalid(int row, int col){
         return row < 1 || row > size || col < 1 || col > size;
     }
-
-    // test client (optional)
-    public static void main(String[] args) {}
-
 }
