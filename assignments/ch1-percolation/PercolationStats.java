@@ -13,8 +13,8 @@ public class PercolationStats {
 
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int t) {
-        if (n <= 0) throw new java.lang.IllegalArgumentException("t is out of bounds");
-        if (t <= 0) throw new java.lang.IllegalArgumentException("n is out of bounds");
+        if (n <= 0) throw new java.lang.IllegalArgumentException("n is out of bounds");
+        if (t <= 0) throw new java.lang.IllegalArgumentException("t is out of bounds");
         trials = t;
         size = n;
         thresholds = new double[t];
